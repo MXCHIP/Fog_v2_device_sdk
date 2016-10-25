@@ -141,18 +141,21 @@ USED void user_fog_v2_device_notification(SUBDEVICE_CMD_TYPE type, const char *s
 Mdns通知的service name是`_easylink._tcp.local.`
 
 ![2.PNG-75.4kB][3]
-例如在IOS上使用Discovery bonjour软件抓取到的设备端信息：
-`MiCOKit 3165#077AC0._easylink._tcp.local.
-MiCOKit\0323165#077AC0.local:8002
-10.0.0.8:8002`
 
-`Firmware Rev = FOG_V2_EMW3165@001
-FogProductId = 84756a84-4f1c-11e6-9d95-00163e103941
-IsHaveSuperUser = true
-MAC = D0:BA:E4:07:7A:C0
-MICO OS Rev = 31621002.050
-Model = MiCOKit-3165
-Protocol = fog2.4.0 `
+例如在IOS上使用Discovery bonjour软件抓取到的设备端信息：
+```
+MiCOKit 3165#077AC0._easylink._tcp.local. 
+MiCOKit\0323165#077AC0.local:8002 
+10.0.0.8:8002` 
+
+Firmware Rev = FOG_V2_EMW3165@001 
+FogProductId = 84756a84-4f1c-11e6-9d95-00163e103941 
+IsHaveSuperUser = true 
+MAC = D0:BA:E4:07:7A:C0 
+MICO OS Rev = 31621002.050 
+Model = MiCOKit-3165 
+Protocol = fog2.4.0 
+``` 
 
 
 字段|说明
