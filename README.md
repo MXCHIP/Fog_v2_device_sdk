@@ -36,7 +36,7 @@ fog_v2_micokit_enjoy和fog_v2_nucleo_enjoy为依托于具体硬件设备的应�
 
 ## 3.3 在MiCoder工程中输入创建Target
 当基于MiCOKit开发板调试时（以MiCOKit-3165为例）：
-如果使用Jlink仿真器， 命令： ` application.fog_v2_micokit_enjoy@MK3165 download total run `
+如果使用Jlink仿真器， 命令： ` application.fog_v2_micokit_enjoy@MK3165 download total run `  
 如果使用Stlink仿真器，命令： ` application.fog_v2_micokit_enjoy@MK3165 download JTAG=stlink-v2 total run `
 
 当基于Nucleo开发板调试时：
