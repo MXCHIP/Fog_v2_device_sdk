@@ -150,7 +150,7 @@ Mdns通知的service name是`_easylink._tcp.local.`
 ```
 MiCOKit 3165#077AC0._easylink._tcp.local. 
 MiCOKit\0323165#077AC0.local:8002 
-10.0.0.8:8002` 
+10.0.0.8:8002 
 
 Firmware Rev = FOG_V2_EMW3165@001 
 FogProductId = 84756a84-4f1c-11e6-9d95-00163e103941 
