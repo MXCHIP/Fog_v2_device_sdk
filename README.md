@@ -4,7 +4,7 @@
 
 ---
 
-FOG2.0设备端SDK是一个依托于MiCOSDK的中间件,完成和服务器后台的交互,屏蔽底层交互细节，为应用层提供出简单好用的API接口，为设备端的快速开发提供保障。更多详细资料请参考MiCO WIKI资料库：[FogCloud 设备端 SDK][1]
+>FOG2.0设备端SDK是一个依托于MiCOSDK的中间件,完成和服务器后台的交互,屏蔽底层交互细节，为应用层提供出简单好用的API接口，为设备端的快速开发提供保障。更多详细资料请参考MiCO WIKI资料库：[FogCloud 设备端 SDK][1]
 
 ---
 
@@ -23,7 +23,7 @@ application/fog_v2_nucleo_enjoy | 为NUCLEO开发板制作的应用程序,支持
 application/fog_v2_api_test | 测试fog_v2底层文件夹提供的API简单demo
 application/fog_v2_subdevice | 子设备接口测试demo
 
-**说明：fog_v2和mqtt-c文件夹的内容是一个依赖于MiCOSDK的中间件，为上层应用提供基础API支撑，
+>**注意：fog_v2和mqtt-c文件夹的内容是一个依赖于MiCOSDK的中间件，为上层应用提供基础API支撑，
 fog_v2_micokit_enjoy和fog_v2_nucleo_enjoy为依托于具体硬件设备的应用案例**
 
 ## 3. 使用步骤
@@ -178,7 +178,7 @@ APP端的SDK集成了设备发现服务，可以调用设备发现的API获取�
 设备端在WIFI station模式下开启了一个TCP SERVER，端口默认为`8002`。
 APP端发起绑定操作时连接设备端的TCP SERVER，发送相应指令给设备端，设备端去云端取到一个验证码再返还给APP，最后APP端用得到的验证码去云端发起绑定请求。
 
-**注意：设备端绑定逻辑已经在SDK中实现，用户无需手动实现。**
+>**注意：设备端绑定逻辑已经在SDK中实现，用户无需手动实现。**
 
 ### 5.3 设备解绑
 如果APP的超级用户删除了设备，设备端如果在线，则会收到通知消息，然后改变自身Mdns通知的`IsHaveSuperUser`字段信息为`false`。
@@ -186,7 +186,7 @@ APP端发起绑定操作时连接设备端的TCP SERVER，发送相应指令给�
 ### 5.4 设备配网
 如果设备端收到配网信息，则设备端会改变自身Mnds通知的`IsHaveSuperUser`字段信息为`UNCHECK`,待去云端查询到设备是否有超级用户后会改变自身Mnds通知的`IsHaveSuperUser`字段信息为`true`或`false`。
 
-**注意：如果APP发现设备列表里面的`IsHaveSuperUser`字段为`UNCHECK`的时候，就因该停止配网，减少路由器的配网负载压力。待设备端到云端查询完时候有超级用户后会自动更新`IsHaveSuperUser`字段信息，APP端再做是否绑定处理。**
+>**注意：如果APP发现设备列表里面的`IsHaveSuperUser`字段为`UNCHECK`的时候，就因该停止配网，减少路由器的配网负载压力。待设备端到云端查询完时候有超级用户后会自动更新`IsHaveSuperUser`字段信息，APP端再做是否绑定处理。**
 
 ### 5.5 普通设备API使用说明
 在调用start_fog_v2_service()接口返回正确之后，即可调用设备发送数据接口fog_v2_device_send_event()和设备接收数据接口fog_v2_device_recv_command()。
