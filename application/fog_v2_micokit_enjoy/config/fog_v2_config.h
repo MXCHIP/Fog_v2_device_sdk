@@ -11,7 +11,7 @@
 #define EMW_3031                            FOG_DISABLE
 
 #if (EMW_3165 == FOG_ENABLE)
-    #define FOG_V2_PRODUCT_ID               ("84756a84-4f1c-11e6-9d95-00163e103941")    //云端建立产品得到的 产品ID
+    #define FOG_V2_PRODUCT_ID               ("3c800be4-8612-11e6-9d95-00163e103941")    //云端建立产品得到的 产品ID
     #define FOG_V2_REPORT_VER               ("FOG_V2_EMW3165@")     //固件主版本号
     #define FOG_V2_REPORT_VER_NUM           ("001")                 //固件次版本号
     #define FOG_V2_MODULE_TYPE              ("EMW3165")             //模块型号
@@ -35,13 +35,13 @@
 
 #define FOG_V2_DEVICE_SN                ("MXCHIP")                  //芯片SN 默认为MXCHIP
 
-#define FOG_V2_HTTP_DOMAIN_NAME         ("v2dev.fogcloud.io")       //HTTP服务器地址
+#define FOG_V2_HTTP_DOMAIN_NAME         ("v2.fogcloud.io")       //HTTP服务器地址
 #define FOG_V2_HTTP_PORT_SSL            (443)   //fog v2 http SSL端口
 #define HTTP_REQ_LOG                    (0)     //1:enable 0:disable
 
-#define FOG_V2_MQTT_DOMAIN_NAME         ("v2dev.fogcloud.io")  //MQTT服务器地址
-#define FOG_V2_MQTT_PORT_SLL            (14431)  //fog v2 MQTT SSL端口
-#define FOG_V2_MQTT_PORT_NOSLL          (18831)  //fog v2 MQTT 非SSL端口
+#define FOG_V2_MQTT_DOMAIN_NAME         ("v2.fogcloud.io")  //MQTT服务器地址
+#define FOG_V2_MQTT_PORT_SLL            (443)  //fog v2 MQTT SSL端口
+#define FOG_V2_MQTT_PORT_NOSLL          (1883)  //fog v2 MQTT 非SSL端口
 #define MQTT_CLIENT_SSL_ENABLE          (0)      //1:enable 0:disable
 #define FOG_MQTT_DEBUG                  (1)      //MQTT打印信息开关
 

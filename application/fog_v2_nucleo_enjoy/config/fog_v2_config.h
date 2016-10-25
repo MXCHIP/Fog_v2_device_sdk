@@ -21,7 +21,7 @@
 #define HTTP_REQ_LOG                    (0)     //1:enable 0:disable
 
 #define FOG_V2_MQTT_DOMAIN_NAME         ("mqtt.fogcloud.io")  //MQTT服务器地址
-#define FOG_V2_MQTT_PORT_SLL            (8443)  //fog v2 MQTT SSL端口
+#define FOG_V2_MQTT_PORT_SLL            (443)  //fog v2 MQTT SSL端口
 #define FOG_V2_MQTT_PORT_NOSLL          (1883)  //fog v2 MQTT 非SSL端口
 #define MQTT_CLIENT_SSL_ENABLE          (0)     //1:enable 0:disable
 #define FOG_MQTT_DEBUG                  (1)     //MQTT打印信息开关
