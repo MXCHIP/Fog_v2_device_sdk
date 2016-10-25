@@ -14,10 +14,14 @@ MiCOSDK：3.0及其以后版本
 [MICOSDK下载路径][2]
 
 ## 2. 目录结构
-lib/fog_v2：完成和FOGCLOUD V2后台的交互逻辑
-lib/mqtt-c：mqtt客户端
-application/fog_v2_micokit_enjoy：为庆科的MiCOKIT开发板制作的应用程序,支持硬件`MiCOkit-3165`、 `MiCOkit-3166`、`MiCOkit-3239`
-application/fog_v2_nucleo_enjoy：为NUCLEO开发板制作的应用程序,支持硬件`NUCLEO-F411`
+目录 | 内容
+--- | ---
+lib/mqtt-c | mqtt客户端源码
+lib/fog_v2 | 与FOGCLOUD V2后台的交互逻辑
+application/fog_v2_micokit_enjoy | 为庆科的MiCOKIT开发板制作的应用程序,支持硬件`MiCOkit-3165`、 `MiCOkit-3166`、`MiCOkit-3239`
+application/fog_v2_nucleo_enjoy | 为NUCLEO开发板制作的应用程序,支持硬件`NUCLEO-F411`
+application/fog_v2_api_test | 测试fog_v2底层文件夹提供的API简单demo
+application/fog_v2_subdevice | 子设备接口测试demo
 
 **说明：fog_v2和mqtt-c文件夹的内容是一个依赖于MiCOSDK的中间件，为上层应用提供基础API支撑，
 fog_v2_micokit_enjoy和fog_v2_nucleo_enjoy为依托于具体硬件设备的应用案例**
@@ -160,12 +164,12 @@ Protocol = fog2.4.0
 
 字段|说明
 ---|---
-`Firmware Rev` | 表示该设备的固件版本
-`FogProductId` | 表示该设备产品ID
-`IsHaveSuperUser` | 表示该设备是否有超级用户，有`true`, `flase`, `UNCHECK`三种状态
-`MICO OS Rev` | 表示该设备的MICO SDK内核版本
-`Model` | 表示该设备的硬件型号
-`Protocol` | 表示该设备使用的Fog SDK中间件版本
+`Firmware Rev` | 该设备的固件版本
+`FogProductId` | 该设备产品ID
+`IsHaveSuperUser` | 该设备是否有超级用户，有`true`, `flase`, `UNCHECK`三种状态
+`MICO OS Rev` | 该设备的MICO SDK内核版本
+`Model` | 该设备的硬件型号
+`Protocol` | 该设备使用的Fog SDK中间件版本
 
 
 APP端的SDK集成了设备发现服务，可以调用设备发现的API获取到设备端的详细信息。
