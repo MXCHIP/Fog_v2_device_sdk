@@ -21,7 +21,6 @@ lib/fog_v2 | 与FOGCLOUD V2后台的交互逻辑(v2.4.0)
 application/fog_v2_micokit_enjoy | 为庆科的MiCOKIT开发板制作的应用程序,支持硬件`MiCOkit-3165`、 `MiCOkit-3166`、`MiCOkit-3239`
 application/fog_v2_nucleo_enjoy | 为NUCLEO开发板制作的应用程序,支持硬件`NUCLEO-F411`
 application/fog_v2_api_test | 测试fog_v2底层文件夹提供的API简单demo
-application/fog_v2_subdevice | 子设备接口测试demo
 
 >**注意：fog_v2和mqtt-c文件夹的内容是一个依赖于MiCOSDK的中间件，为上层应用提供基础API支撑，
 fog_v2_micokit_enjoy和fog_v2_nucleo_enjoy为依托于具体硬件设备的应用案例**
@@ -108,7 +107,7 @@ OSStatus fog_v2_set_subdevice_status(const char *s_product_id, const char *s_mac
 //参数： s_product_id - 子设备产品ID
 //参数： s_mac - 子设备MAC地址
 //参数： flag - 发送方式
-//下面三个宏定义可以采用或操作的方式
+//下面两个宏定义可以采用或操作的方式
 //FOG_V2_SUB_ADVTYPE_RULES_PUBLISH  向设备的topic去publish数据
 //FOG_V2_SUB_ADVTYPE_RULES_DATEBASE 将此次的payload数据存入数据库
 //返回值：kNoErr - 成功 其他 - 失败
