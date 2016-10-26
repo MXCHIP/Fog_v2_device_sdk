@@ -9,11 +9,11 @@
 ---
 
 
-## 1. 依赖
+## 1. 依赖 
 MiCOSDK：3.0及其以后版本  
 [MICOSDK下载路径][2]
 
-## 2. 目录结构
+## 2. 目录结构 
 目录 | 内容
 --- | ---
 lib/mqtt-c | mqtt客户端源码(v0.1.8)
@@ -26,15 +26,15 @@ application/fog_v2_subdevice | 子设备接口测试demo
 >**注意：fog_v2和mqtt-c文件夹的内容是一个依赖于MiCOSDK的中间件，为上层应用提供基础API支撑，
 fog_v2_micokit_enjoy和fog_v2_nucleo_enjoy为依托于具体硬件设备的应用案例**
 
-## 3. 使用步骤
-## 3.1 将FOG2.0SDK中间件加入到MiCoder
+## 3. 使用步骤 
+### 3.1 将FOG2.0SDK中间件加入到MiCoder 
 将fog_v2和mqtt-c文件夹复制到MiCOSDK工程目录MiCO SDK\libraries\protocols\中
 根据当前你的硬件平台,将fog_v2_micokit_enjoy或者fog_v2_nucleo_enjoy文件夹复制到MiCOSDK工程目录MiCO_SDK\demos\application中
 
-## 3.2 在FogCloud后台创建新产品
+### 3.2 在FogCloud后台创建新产品 
 在FogCloud后台创建一个新的产品,得到新的产品ID。替换fog_v2_micokit_enjoy或者fog_v2_nucleo_enjoy文件夹中的config/fog_v2_config.h中的` FOG_V2_PRODUCT_ID `宏定义替换成云端创建得到的产品ID。
 
-## 3.3 在MiCoder工程中输入创建Target
+### 3.3 在MiCoder工程中输入创建Target 
 当基于MiCOKit开发板调试时（以MiCOKit-3165为例）：
 如果使用Jlink仿真器， 命令： ` application.fog_v2_micokit_enjoy@MK3165 download total run `  
 如果使用Stlink仿真器，命令： ` application.fog_v2_micokit_enjoy@MK3165 download JTAG=stlink-v2 total run `
@@ -43,8 +43,8 @@ fog_v2_micokit_enjoy和fog_v2_nucleo_enjoy为依托于具体硬件设备的应�
 当使用Stlink仿真器时， 命令： ` application.fog_v2_nucleo_enjoy@NUCLEO_F411RE download JTAG=stlink-v2-1 run `
 
 
-## 4. Fog SDK中间件API说明
-## 4.1 普通设备API接口如下：
+## 4. Fog SDK中间件API说明 
+###  4.1 普通设备API接口如下： 
 ```
 //功能：开启fog的服务
 //参数：无
@@ -54,7 +54,7 @@ OSStatus start_fog_v2_service(void);
 //功能：往云端发送数据
 //参数： payload - 要往云端发送的数据，该指针指向的数据只能为json格式
 //参数： flag - 发送方式
-//下面三个宏定义组合,采用异或组合的方式
+//下面三个宏定义可以采用或操作的方式
 //FOG_V2_SUB_ADVTYPE_RULES_PUBLISH  向设备的topic去publish数据
 //FOG_V2_SUB_ADVTYPE_RULES_DATEBASE 将此次的payload数据存入数据库
 //FOG_V2_SUB_ADVTYPE_RULES_PRODUCT  向设备对应产品的topic去publish数据(数据推送给厂商)
@@ -80,7 +80,7 @@ bool fog_v2_is_have_superuser(void);
 
 ```
 
-## 4.2 网关子设备API接口如下：
+### 4.2 网关子设备API接口如下： 
 注意：要开启网关子设备API,则需要在应用程序config/fog_v2_config.h中`FOG_V2_USE_SUB_DEVICE`宏定义更改为`#define FOG_V2_USE_SUB_DEVICE  (1)`才能生效。
 
 ```
@@ -108,7 +108,7 @@ OSStatus fog_v2_set_subdevice_status(const char *s_product_id, const char *s_mac
 //参数： s_product_id - 子设备产品ID
 //参数： s_mac - 子设备MAC地址
 //参数： flag - 发送方式
-//下面三个宏定义组合,采用异或组合的方式
+//下面三个宏定义可以采用或操作的方式
 //FOG_V2_SUB_ADVTYPE_RULES_PUBLISH  向设备的topic去publish数据
 //FOG_V2_SUB_ADVTYPE_RULES_DATEBASE 将此次的payload数据存入数据库
 //返回值：kNoErr - 成功 其他 - 失败
