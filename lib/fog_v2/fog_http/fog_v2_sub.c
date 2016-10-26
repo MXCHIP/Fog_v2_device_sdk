@@ -48,12 +48,19 @@ static OSStatus fog_v2_subdevice_register(const char *s_product_id, const char *
     char http_body[256] = {0};
     char device_id_temp[64] = {0};
     int32_t code = -1;
+    uint32_t index = 0;
     FOG_HTTP_RESPONSE_SETTING_S user_http_res;
 
     if ( fog_v2_is_have_superuser( ) == false )
     {
         app_log("[ERROR]gateway don't have superuser!");
         return kGeneralErr;
+    }
+
+    if(get_sub_device_queue_index_by_mac(&index, s_product_id, s_mac) == true)
+    {
+        app_log("this device is already register!!! index = %ld", index);
+        return kNoErr;
     }
 
 start_subdevice_register:
@@ -121,13 +128,6 @@ static OSStatus fog_v2_subdevice_unregister(const char *s_product_id, const char
     char *subdevice_id = NULL;
     uint32_t index = 0;
 
-start_subdevice_unregister:
-    while(get_https_connect_status() == false)
-    {
-        app_log("https disconnect, fog_v2_subdevice_unregister is waitting...");
-        mico_thread_msleep(200);
-    }
-
     if ( get_sub_device_queue_index_by_mac( &index, s_product_id, s_mac ) == false )
     {
         app_log("mac is error");
@@ -138,6 +138,13 @@ start_subdevice_unregister:
     {
         app_log("subdevice_id is error");
         return kGeneralErr;
+    }
+
+start_subdevice_unregister:
+    while(get_https_connect_status() == false)
+    {
+        app_log("https disconnect, fog_v2_subdevice_unregister is waitting...");
+        mico_thread_msleep(200);
     }
 
     sprintf(http_body, sub_device_unregister_body, subdevice_id);
@@ -199,13 +206,6 @@ static OSStatus fog_v2_subdevice_attach(const char *s_product_id, const char *s_
     uint32_t index = 0;
     char *subdevice_id = NULL;
 
-start_subdevice_attach:
-    while(get_https_connect_status() == false)
-    {
-        app_log("https disconnect, fog_v2_subdeice_attach is waitting...");
-        mico_thread_msleep(200);
-    }
-
     if(get_sub_device_queue_index_by_mac(&index, s_product_id, s_mac) == false)
     {
         app_log("mac is error");
@@ -216,6 +216,13 @@ start_subdevice_attach:
     {
         app_log("subdevice_id is error");
         return kGeneralErr;
+    }
+
+start_subdevice_attach:
+    while(get_https_connect_status() == false)
+    {
+        app_log("https disconnect, fog_v2_subdeice_attach is waitting...");
+        mico_thread_msleep(200);
     }
 
     sprintf(http_body, sub_device_attach_body, subdevice_id);
@@ -278,14 +285,6 @@ static OSStatus fog_v2_subdevice_detach(const char *s_product_id, const char *s_
     char *subdevice_id = NULL;
     uint32_t index = 0;
 
-start_subdeice_detach:
-
-    while(get_https_connect_status() == false)
-    {
-        app_log("https disconnect, fog_v2_subdeice_detach is waitting...");
-        mico_thread_msleep(200);
-    }
-
     if(get_sub_device_queue_index_by_mac(&index, s_product_id, s_mac) == false)
     {
         app_log("mac is error");
@@ -296,6 +295,13 @@ start_subdeice_detach:
     {
         app_log("subdevice_id is error");
         return kGeneralErr;
+    }
+
+start_subdeice_detach:
+    while(get_https_connect_status() == false)
+    {
+        app_log("https disconnect, fog_v2_subdevice_detach is waitting...");
+        mico_thread_msleep(200);
     }
 
     sprintf(http_body, sub_device_detach_body, subdevice_id);
@@ -358,7 +364,7 @@ OSStatus fog_v2_subdevice_add_timeout(const char *s_product_id)
 start_add_timeout:
     while(get_https_connect_status() == false)
     {
-        app_log("https disconnect, fog_v2_subdeice_detach is waitting...");
+        app_log("https disconnect, fog_v2_subdevice_add_timeout is waitting...");
         mico_thread_msleep(200);
     }
 
@@ -406,7 +412,7 @@ OSStatus fog_v2_subdeice_get_list(char *http_response, uint32_t recv_len, bool *
 start_get_list:
     while(get_https_connect_status() == false)
     {
-        app_log("https disconnect, subdevice get list is waitting...");
+        app_log("https disconnect, fog_v2_subdeice_get_list is waitting...");
         mico_thread_msleep(200);
     }
 
@@ -474,7 +480,7 @@ static OSStatus fog_v2_subdevice_send_event(const char *payload, const char *s_p
 start_sub_send_event:
     while(get_https_connect_status() == false)
     {
-        app_log("https disconnect, fog_v2_subdeice_detach is waitting...");
+        app_log("https disconnect, fog_v2_subdevice_send_event is waitting...");
         mico_thread_msleep(200);
     }
 
