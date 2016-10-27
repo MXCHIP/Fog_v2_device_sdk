@@ -24,6 +24,7 @@ void appNotify_WifiStatusHandler( WiFiEvent status, void* const inContext )
     }
 }
 
+//接收数据线程
 void fog_v2_recv( mico_thread_arg_t arg )
 {
     UNUSED_PARAMETER( arg );
@@ -35,9 +36,9 @@ void fog_v2_recv( mico_thread_arg_t arg )
     fog_recv_buff = malloc( FOG_V2_RECV_BUFF_LEN );
     require( fog_recv_buff != NULL, exit );
 
-    while(1)
+    while ( 1 )
     {
-        memset(fog_recv_buff, 0, FOG_V2_RECV_BUFF_LEN);
+        memset( fog_recv_buff, 0, FOG_V2_RECV_BUFF_LEN );
         err = fog_v2_device_recv_command( fog_recv_buff, FOG_V2_RECV_BUFF_LEN, MICO_NEVER_TIMEOUT );
         if ( err == kNoErr )
         {
@@ -47,44 +48,45 @@ void fog_v2_recv( mico_thread_arg_t arg )
         app_log("recv data:%s", fog_recv_buff);
     }
 
-exit:
-    if(fog_recv_buff != NULL)
+    exit:
+    if ( fog_recv_buff != NULL )
     {
-        free(fog_recv_buff);
+        free( fog_recv_buff );
         fog_recv_buff = NULL;
     }
 
     mico_rtos_delete_thread( NULL );
 }
 
+//发送数据线程
 void fog_v2_send( mico_thread_arg_t arg )
 {
     UNUSED_PARAMETER( arg );
-    char send_buff[256] = {0};
+    char send_buff[256] = { 0 };
     uint32_t count = 0;
 
     app_log("fog v2 recv thread start!");
 
-    while(1)
+    while ( 1 )
     {
-        if(fog_v2_is_have_superuser() == true)
+        if ( fog_v2_is_have_superuser( ) == true )
         {
-            memset(send_buff, 0, sizeof(send_buff));
-            sprintf(send_buff, "{\"hello fog\" : %ld}", count); //这种发送数据格式无法适配到mico总动员APP
+            memset( send_buff, 0, sizeof(send_buff) );
+            sprintf( send_buff, "{\"hello fog\" : %ld}", count ); //这种发送数据格式无法适配到mico总动员APP
 
-            fog_v2_device_send_event(send_buff, FOG_V2_SEND_EVENT_RULES_PUBLISH | FOG_V2_SEND_EVENT_RULES_DATEBASE);
-            count ++;
+            fog_v2_device_send_event( send_buff, FOG_V2_SEND_EVENT_RULES_PUBLISH | FOG_V2_SEND_EVENT_RULES_DATEBASE );
+            count++;
         }
 
-        mico_thread_sleep(3);
+        mico_thread_sleep( 3 );
     }
     mico_rtos_delete_thread( NULL );
 }
 
-int application_start(void)
+int application_start( void )
 {
-	app_log_trace();
-	OSStatus err = kNoErr;
+    app_log_trace();
+    OSStatus err = kNoErr;
     mico_Context_t* mico_context;
 
     app_log("APP Version:%s%s", FOG_V2_REPORT_VER, FOG_V2_REPORT_VER_NUM);
@@ -96,16 +98,16 @@ int application_start(void)
     err = mico_system_notify_register( mico_notify_WIFI_STATUS_CHANGED, (void *) appNotify_WifiStatusHandler, NULL );
     require_noerr( err, exit );
 
-	mico_context = mico_system_context_init(sizeof(FOG_DES_S));
+    mico_context = mico_system_context_init( sizeof(FOG_DES_S) );
 
-	err = mico_system_init(mico_context);
-	require_noerr( err, exit);
+    err = mico_system_init( mico_context );
+    require_noerr( err, exit );
 
     /* wait for wifi on */
     mico_rtos_get_semaphore( &wifi_sem, MICO_WAIT_FOREVER );
 
-    err = start_fog_v2_service();
-    require_noerr( err, exit);
+    err = start_fog_v2_service( );
+    require_noerr( err, exit );
 
     /* Create send thread */
     err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_send_thread", fog_v2_send, 0x1000, 0 );
@@ -115,7 +117,7 @@ int application_start(void)
     err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_recv_thread", fog_v2_recv, 0x1000, 0 );
     require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_recv_thread." );
 
-	exit:
-	mico_rtos_delete_thread(NULL);
-	return err;
+    exit:
+    mico_rtos_delete_thread( NULL );
+    return err;
 }

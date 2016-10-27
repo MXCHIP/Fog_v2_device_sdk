@@ -46,7 +46,7 @@ void mico_system_delegate_config_will_stop( void )
 
   mico_stop_timer(&_Led_EL_timer);
   mico_deinit_timer( &_Led_EL_timer );
-  MicoSysLed(false);
+  MicoSysLed(true);
 
 #ifdef USE_MiCOKit_EXT
   memset(oled_show_line, '\0', OLED_DISPLAY_MAX_CHAR_PER_ROW+1);
