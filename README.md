@@ -139,7 +139,7 @@ USED void user_fog_v2_device_notification(SUBDEVICE_CMD_TYPE type, const char *s
 
 ## 5.设备端SDK注意事项
  
-### 5.1 Mnds通知
+### 5.1 Mdns通知
 设备端在连接上路由器后会开启自身的Mdns服务，供App端搜索到设备。
 Mdns通知的service name是`_easylink._tcp.local.`
 
