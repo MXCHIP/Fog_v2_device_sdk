@@ -1,5 +1,5 @@
-#ifndef __FOG_CONFIG_H_
-#define __FOG_CONFIG_H_
+#ifndef __FOG_V2_CONFIG_H_
+#define __FOG_V2_CONFIG_H_
 
 #define FOG_V2_PRODUCT_ID               ("3c800be4-8612-11e6-9d95-00163e103941")    //云端建立产品得到的 产品ID
 #define FOG_V2_REPORT_VER               ("FOG_V2_EMW3165@")     //固件主版本号

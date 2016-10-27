@@ -87,7 +87,9 @@ FOG_DES_S *get_fog_des_g(void)
     return fog_des_g;
 }
 
-//判断是否有超级用户
+//功能：查询本设备是否有超级用户（被绑定)
+//参数：无
+//返回值：true - 有超级用户，flase - 无超级用户
 bool fog_v2_is_have_superuser(void)
 {
     return fog_des_g->is_hava_superuser;
@@ -105,7 +107,9 @@ bool fog_v2_is_mqtt_connect(void)
     return fog_des_g->is_mqtt_connect;
 }
 
-//设置设备解绑标志位
+//功能：设备端设置回收标志位 若调用该接口，设备重启后联网会自动向云端发起设备回收请求
+//参数：无
+//返回值：无
 void fog_v2_set_device_recovery_flag(void)
 {
     app_log("[NOTICE]device unbind!!");
@@ -1131,8 +1135,14 @@ OSStatus fog_v2_device_generate_device_vercode(void)
     return err;
 }
 
-//发送数据 如果是token失效 内部会刷新token,然后重发
-//payload最大为2048Byte
+//功能：往云端发送数据
+//参数： payload - 要往云端发送的数据，该指针指向的数据只能为json格式
+//参数： flag - 发送方式
+//下面三个宏定义组合,采用异或组合的方式
+//FOG_V2_SEND_EVENT_RULES_PUBLISH  向设备的topic去publish数据
+//FOG_V2_SEND_EVENT_RULES_DATEBASE 将此次的payload数据存入数据库
+//FOG_V2_SEND_EVENT_RULES_PRODUCT  向设备对应产品的topic去publish数据(数据推送给厂商)
+//返回值：kNoErr为成功 其他值为失败
 OSStatus fog_v2_device_send_event(const char *payload, uint32_t flag)
 {
     OSStatus err = kGeneralErr;
@@ -1327,7 +1337,9 @@ static void fog_init(mico_thread_arg_t arg)
     return;
 }
 
-
+//功能：开启fog的服务
+//参数：无
+//返回值：kNoErr为成功
 OSStatus start_fog_v2_service(void)
 {
     OSStatus err = kGeneralErr;

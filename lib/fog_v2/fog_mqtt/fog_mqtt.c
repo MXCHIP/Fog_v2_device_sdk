@@ -538,7 +538,11 @@ static void cmdArrived( MessageData* md )
     }
 }
 
-//父设备从云端接收command
+//功能：从云端接收数据
+//参数： payload - 接收数据缓冲区地址
+//参数： payload_len - 接收数据缓冲区地址的长度
+//参数： timeout - 接收数据等待时间
+//返回值：kNoErr为成功 其他值为失败
 OSStatus fog_v2_device_recv_command( char *payload, uint32_t payload_len, uint32_t timeout )
 {
     OSStatus err = kUnknownErr;

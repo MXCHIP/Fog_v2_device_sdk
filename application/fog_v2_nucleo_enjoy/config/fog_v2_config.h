@@ -1,5 +1,5 @@
-#ifndef __FOG_CONFIG_H_
-#define __FOG_CONFIG_H_
+#ifndef __FOG_V2_CONFIG_H_
+#define __FOG_V2_CONFIG_H_
 
 #define FOG_ENABLE  (1)
 #define FOG_DISABLE (0)

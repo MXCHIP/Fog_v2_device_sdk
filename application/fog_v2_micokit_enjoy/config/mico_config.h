@@ -65,7 +65,9 @@
 
 /************************************************************************
  * Command line interface */
+#if (EMW_3165 == FOG_DISABLE)
 #define MICO_CLI_ENABLE
+#endif
 
 /************************************************************************
  * Start a system monitor daemon, application can register some monitor

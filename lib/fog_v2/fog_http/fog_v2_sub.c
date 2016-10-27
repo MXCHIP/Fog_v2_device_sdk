@@ -672,7 +672,10 @@ OSStatus remove_mqtt_topic_by_mac(const char *s_product_id, const char *s_mac)
     return err;
 }
 
-//添加一个子设备
+//功能：添加一个子设备
+//参数： s_product_id - 子设备产品ID
+//参数： s_mac - 子设备MAC地址
+//返回值：kNoErr为成功 其他值为失败
 OSStatus fog_v2_add_subdevice( const char *s_product_id, const char *s_mac, bool set_auto_online)
 {
     OSStatus err = kGeneralErr;
@@ -706,7 +709,10 @@ OSStatus fog_v2_add_subdevice( const char *s_product_id, const char *s_mac, bool
     return err;
 }
 
-//删除一个子设备
+//功能：删除一个子设备
+//参数： s_product_id - 子设备产品ID
+//参数： s_mac - 子设备MAC地址
+//返回值：kNoErr为成功 其他值为失败
 OSStatus fog_v2_remove_subdevice( const char *s_product_id, const char *s_mac )
 {
     OSStatus err = kGeneralErr;
@@ -745,7 +751,11 @@ OSStatus fog_v2_remove_subdevice( const char *s_product_id, const char *s_mac )
     return err;
 }
 
-//设置子设备状态 在线或者离线
+//功能：设置子设备在线离线状态
+//参数： s_product_id - 子设备产品ID
+//参数： s_mac - 子设备MAC地址
+//参数：online - 子设备是否在线
+//返回值：kNoErr为成功 其他值为失败
 OSStatus fog_v2_set_subdevice_status(const char *s_product_id, const char *s_mac, bool online)
 {
     OSStatus err = kGeneralErr;
@@ -769,7 +779,14 @@ OSStatus fog_v2_set_subdevice_status(const char *s_product_id, const char *s_mac
 }
 
 
-//子设备发送消息
+//功能：子设备发送数据
+//参数： s_product_id - 子设备产品ID
+//参数： s_mac - 子设备MAC地址
+//参数： flag - 发送方式
+//下面两个宏定义组合,采用异或组合的方式
+//FOG_V2_SEND_EVENT_RULES_PUBLISH  向设备的topic去publish数据
+//FOG_V2_SEND_EVENT_RULES_DATEBASE 将此次的payload数据存入数据库
+//返回值：kNoErr为成功 其他值为失败
 OSStatus fog_v2_subdevice_send(const char *s_product_id, const char *s_mac, const char *payload, uint32_t flag)
 {
     OSStatus err = kGeneralErr;
@@ -783,7 +800,13 @@ OSStatus fog_v2_subdevice_send(const char *s_product_id, const char *s_mac, cons
     return err;
 }
 
-//子设备接收消息
+//功能：子设备接收数据
+//参数： s_product_id - 子设备产品ID
+//参数： s_mac - 子设备MAC地址
+//参数： payload - 接收数据缓冲区地址
+//参数： payload_len - 接收数据缓冲区地址的长度
+//参数： timeout - 接收数据的超时时间
+//返回值：kNoErr为成功 其他值为失败
 OSStatus fog_v2_subdevice_recv(const char *s_product_id, const char *s_mac, char *payload, uint32_t payload_len, uint32_t timeout)
 {
     OSStatus err = kGeneralErr;
@@ -803,11 +826,12 @@ OSStatus fog_v2_subdevice_recv(const char *s_product_id, const char *s_mac, char
     require(sub_device_queue_p != NULL, exit);
 
     err = mico_rtos_pop_from_queue(sub_device_queue_p, &subdevice_recv_p, timeout);
-    require_noerr( err, exit );
+    require_noerr_string( err, exit, "queue is full!!!!");
+    require_noerr_action_string(err, exit, app_log("product id:%s, mac:%s queue is full!", s_product_id, s_mac); ,"mico_rtos_pop_from_queue() error");
 
-    require_action( subdevice_recv_p != NULL, exit, err = kGeneralErr );
+    require_action_string( subdevice_recv_p != NULL, exit, err = kGeneralErr, "subdevice_recv_p is NULL");
 
-    require_action( payload_len > subdevice_recv_p->data_len, exit, err = kGeneralErr );
+    require_action_string( payload_len > subdevice_recv_p->data_len, exit, err = kGeneralErr, "payload_len is too short");
 
     memset(payload, 0, payload_len);
     memcpy(payload, subdevice_recv_p->data, subdevice_recv_p->data_len);

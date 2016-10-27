@@ -29,9 +29,9 @@ OSStatus start_fog_v2_service(void);
 //参数： payload - 要往云端发送的数据，该指针指向的数据只能为json格式
 //参数： flag - 发送方式
 //下面三个宏定义组合,采用异或组合的方式
-//FOG_V2_SUB_ADVTYPE_RULES_PUBLISH  向设备的topic去publish数据
-//FOG_V2_SUB_ADVTYPE_RULES_DATEBASE 将此次的payload数据存入数据库
-//FOG_V2_SUB_ADVTYPE_RULES_PRODUCT  向设备对应产品的topic去publish数据(数据推送给厂商)
+//FOG_V2_SEND_EVENT_RULES_PUBLISH  向设备的topic去publish数据
+//FOG_V2_SEND_EVENT_RULES_DATEBASE 将此次的payload数据存入数据库
+//FOG_V2_SEND_EVENT_RULES_PRODUCT  向设备对应产品的topic去publish数据(数据推送给厂商)
 //返回值：kNoErr为成功 其他值为失败
 OSStatus fog_v2_device_send_event(const char *payload, uint32_t flag);
 
@@ -81,10 +81,9 @@ OSStatus fog_v2_set_subdevice_status(const char *s_product_id, const char *s_mac
 //参数： s_product_id - 子设备产品ID
 //参数： s_mac - 子设备MAC地址
 //参数： flag - 发送方式
-//下面三个宏定义组合,采用异或组合的方式
-//FOG_V2_SUB_ADVTYPE_RULES_PUBLISH  向设备的topic去publish数据
-//FOG_V2_SUB_ADVTYPE_RULES_DATEBASE 将此次的payload数据存入数据库
-//FOG_V2_SUB_ADVTYPE_RULES_PRODUCT  向设备对应产品的topic去publish数据(数据推送给厂商)
+//下面两个宏定义组合,采用异或组合的方式
+//FOG_V2_SEND_EVENT_RULES_PUBLISH  向设备的topic去publish数据
+//FOG_V2_SEND_EVENT_RULES_DATEBASE 将此次的payload数据存入数据库
 //返回值：kNoErr为成功 其他值为失败
 OSStatus fog_v2_subdevice_send(const char *s_product_id, const char *s_mac, const char *payload, uint32_t flag);
 
