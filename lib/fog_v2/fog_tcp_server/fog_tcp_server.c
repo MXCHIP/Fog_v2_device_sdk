@@ -37,15 +37,21 @@ bool check_recv_data(char *buf)
 }
 
 //从云端拿到vercode 并发送给手机
-void get_vercode_from_fog(int client_fd)
+OSStatus get_vercode_from_fog(int client_fd)
 {
-    OSStatus err = kNoErr;
+    OSStatus err = kGeneralErr;
     ssize_t send_len = 0;
-    char response_body[256] = {0};
-    char response_html[512] = {0};
+    char *response_body = NULL;
+    char *response_html = NULL;
 
-    memset(response_body, 0, sizeof(response_body));
-    memset(response_html, 0, sizeof(response_html));
+    response_body = malloc(256);
+    require_action_string(response_body != NULL, exit, err = kNoMemoryErr, "malloc() error");
+
+    response_html = malloc(512);
+    require_action_string(response_html != NULL, exit, err = kNoMemoryErr, "malloc() error");
+
+    memset(response_body, 0, 256);
+    memset(response_html, 0, 512);
 
     //云端获取vercode
     err = fog_v2_device_generate_device_vercode();
@@ -61,6 +67,21 @@ void get_vercode_from_fog(int client_fd)
     send_len = send(client_fd, response_html, strlen(response_html), 0);
 
     tcp_server_log("send_len:%d, response phone:\r\n%s", send_len, response_html);
+
+    exit:
+    if(response_body != NULL)
+    {
+        free(response_body);
+        response_body = NULL;
+    }
+
+    if(response_html != NULL)
+    {
+        free(response_html);
+        response_html = NULL;
+    }
+
+    return err;
 }
 
 
@@ -108,10 +129,12 @@ void fog_tcp_client_thread(mico_thread_arg_t arg)
             //数据过滤
             require_string(check_recv_data(buf) == true, exit, "recv tcp client data error");
 
-            get_vercode_from_fog(fd);
+            err = get_vercode_from_fog(fd);
+            if(err == kNoErr)
+            {
+                mico_thread_msleep(100); //延时200ms
+            }
 
-            mico_thread_msleep(100); //延时200ms
-            err = kNoErr;
             goto exit;
         }
     }
@@ -180,7 +203,7 @@ void fog_tcp_server_thread( mico_thread_arg_t arg )
                 strcpy( client_ip_str, inet_ntoa( client_addr.sin_addr ) );
                 tcp_server_log( "TCP Client %s:%d connected, fd: %d", client_ip_str, client_addr.sin_port, client_fd );
 
-                err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, " FOG TCP Client", fog_tcp_client_thread, 0x1000, (uint32_t)(&client_fd) ); //堆栈空间至少需要4K
+                err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, " FOG TCP Client", fog_tcp_client_thread, 0x800, (uint32_t)(&client_fd) ); //堆栈空间至少需要4K
                 if(err != kNoErr)
                 {
                     tcp_server_log("[ERROR]mico_rtos_create_thread create error!");

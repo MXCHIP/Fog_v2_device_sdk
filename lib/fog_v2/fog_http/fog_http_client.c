@@ -66,6 +66,8 @@ static void onClearData( struct _HTTPHeader_t * inHeader, void * inUserContext )
 static OSStatus onReceivedData( struct _HTTPHeader_t * inHeader, uint32_t inPos, uint8_t * inData, size_t inLen, void * inUserContext );
 static void fog_v2_http_client_thread(mico_thread_arg_t arg);
 
+extern void ssl_version_set( SSL_VERSION version );
+
 OSStatus start_fogcloud_http_client(void)
 {
     OSStatus err = kGeneralErr;
@@ -289,7 +291,8 @@ static void fog_v2_http_client_thread(mico_thread_arg_t arg)
     err = connect( http_fd, (struct sockaddr *)&addr, sizeof(addr) );
     require_noerr_action( err, exit, app_log("connect http server failed"));
 
-    ssl_version_set(TLS_V1_2_MODE);    //设置SSL版本
+    //ssl_version_set(TLS_V1_2_MODE);    //设置SSL版本
+    ssl_set_client_version(TLS_V1_2_MODE);
 
     app_log("start ssl_connect");
 
@@ -419,9 +422,8 @@ static void fog_v2_http_client_thread(mico_thread_arg_t arg)
     }
 
     SocketClose( &http_fd );
-    HTTPHeaderClear( httpHeader );
+
     HTTPHeaderDestory( &httpHeader );
-    httpHeader = NULL;
 
     mico_thread_msleep(50);
     system_log("#####https disconnect#####:num_of_chunks:%d, free:%d", MicoGetMemoryInfo()->num_of_chunks, MicoGetMemoryInfo()->free_memory);

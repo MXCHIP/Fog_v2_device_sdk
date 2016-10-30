@@ -78,8 +78,10 @@ void fog_v2_send( mico_thread_arg_t arg )
             count++;
         }
 
-        mico_thread_sleep( 3 );
+        app_log("num_of_chunks:%d,allocted_memory:%d, free:%d, total_memory:%d", MicoGetMemoryInfo()->num_of_chunks, MicoGetMemoryInfo()->allocted_memory, MicoGetMemoryInfo()->free_memory, MicoGetMemoryInfo()->total_memory);
+        mico_thread_msleep( 500 );
     }
+
     mico_rtos_delete_thread( NULL );
 }
 

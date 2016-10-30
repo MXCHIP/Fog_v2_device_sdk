@@ -20,7 +20,7 @@
 OSStatus start_fog_bonjour(bool is_uncheck, FOG_DES_S *in_fog_des)
 {
 	char *temp_txt = NULL;
-	char *temp_txt2;
+	char *temp_txt2 = NULL;
 	OSStatus err;
 	net_para_st para;
 	mdns_init_t init;
@@ -38,10 +38,12 @@ OSStatus start_fog_bonjour(bool is_uncheck, FOG_DES_S *in_fog_des)
 	init.service_name = FOG_BONJOUR_SERVICE_NAME; //mico_config.h文件中定义
 
 	/*   name#xxxxxx.local.  */
+	memset(temp_txt, 0, MDNS_TEXT_MAX_SIZE);
 	snprintf(temp_txt, 100, "%s#%c%c%c%c%c%c.local.", in_context->flashContentInRam.micoSystemConfig.name, in_context->micoStatus.mac[9], in_context->micoStatus.mac[10], in_context->micoStatus.mac[12], in_context->micoStatus.mac[13], in_context->micoStatus.mac[15], in_context->micoStatus.mac[16]);
 	init.host_name = (char*) __strdup(temp_txt);
 
 	/*   name#xxxxxx.   */
+	memset(temp_txt, 0, MDNS_TEXT_MAX_SIZE);
 	snprintf(temp_txt, 100, "%s#%c%c%c%c%c%c", in_context->flashContentInRam.micoSystemConfig.name, in_context->micoStatus.mac[9], in_context->micoStatus.mac[10], in_context->micoStatus.mac[12], in_context->micoStatus.mac[13], in_context->micoStatus.mac[15], in_context->micoStatus.mac[16]);
 	init.instance_name = (char*) __strdup(temp_txt);
 

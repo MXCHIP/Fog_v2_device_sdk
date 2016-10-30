@@ -106,7 +106,7 @@ void init_fog_mqtt_service( void )
 #endif
 
     /* get free memory */
-    app_log("[mqtt]Free memory: %d bytes", MicoGetMemoryInfo()->free_memory) ;
+    app_log("num_of_chunks:%d,allocted_memory:%d, free:%d, total_memory:%d", MicoGetMemoryInfo()->num_of_chunks, MicoGetMemoryInfo()->allocted_memory, MicoGetMemoryInfo()->free_memory, MicoGetMemoryInfo()->total_memory);
 
     err = mico_rtos_init_mutex( &(mqtt_sub_settings.mutex) );
     require_noerr( err, exit );

@@ -4,7 +4,7 @@
 #define FOG_ENABLE  (1)
 #define FOG_DISABLE (0)
 
-//选择模块型号
+//选择你的模块型号
 #define NUCLEO_F411                     FOG_ENABLE
 
 #if (NUCLEO_F411 == FOG_ENABLE)

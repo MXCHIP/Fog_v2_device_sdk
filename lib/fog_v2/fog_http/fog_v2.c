@@ -1300,8 +1300,10 @@ static void fog_init(mico_thread_arg_t arg)
 
     while(fog_des_g->is_mqtt_connect == false) //等待MQTT连接完成
     {
-        mico_thread_msleep(20);
+        mico_thread_msleep(50);
     }
+
+    app_log("mqtt connect ok.....");
 
      //6.检查超级用户
     err = fog_v2_device_check_superuser();  //刚刷新完token,token不可能会失效
@@ -1309,8 +1311,6 @@ static void fog_init(mico_thread_arg_t arg)
 
     stop_fog_bonjour();
     start_fog_bonjour(false, fog_des_g);   //开启bonjour
-
-    app_log("mqtt connect ok.....");
 
     //7.同步设备版本、硬件型号到云端
     err = fog_v2_device_sync_status();

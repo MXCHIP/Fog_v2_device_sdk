@@ -482,7 +482,9 @@ int NewNetwork(Network* n, char* addr, int port, ssl_opts ssl_settings)
       case TLS_V1_1_MODE:
       case TLS_V1_2_MODE:{
         ssl_flag = (uint16_t)ssl_settings.ssl_version;
-        set_ssl_client_version(ssl_settings.ssl_version );
+        //set_ssl_client_version(ssl_settings.ssl_version );
+        ssl_set_client_version(ssl_settings.ssl_version);
+
         mqtt_mico_log("SSL version: %d.", ssl_settings.ssl_version);
         break;
       }

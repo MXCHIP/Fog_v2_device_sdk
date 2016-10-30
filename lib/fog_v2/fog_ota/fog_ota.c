@@ -24,6 +24,8 @@ static void fog_v2_ota_finish(void);
 
 void fog_ota_thread(mico_thread_arg_t args);
 
+extern void ssl_version_set( SSL_VERSION version );
+
 static mico_semaphore_t ota_sem = NULL;
 static uint32_t ota_reveive_index = 0;
 static uint32_t ota_file_len = 0;
@@ -35,6 +37,49 @@ Host: %s\r\n\
 Connection: keep-alive\r\n\
 Range: bytes=%d-\r\n\
 Accept-Encoding: identity\r\n\r\n";
+
+
+//src:输入    dest:输出     dest_size:最大输出长度
+bool user_str2hex(unsigned char *src, uint8_t *dest, uint32_t dest_size)
+{
+    unsigned char hb = 0;
+    unsigned char lb = 0;
+    uint32_t i = 0, j = 0;
+    uint32_t src_size = strlen((const char *)src);
+
+    if ( (src_size % 2 != 0) || (src_size <= 0))
+        return false;
+
+    src = (unsigned char *) strupr((char *) src );
+
+    for ( i = 0; i < src_size; i ++ )
+    {
+        if(i > dest_size * 2)
+            return false;
+
+        hb = src[i];
+        if ( hb >= 'A' && hb <= 'F' )
+            hb = hb - 'A' + 10;
+        else if ( hb >= '0' && hb <= '9' )
+            hb = hb - '0';
+        else
+            return false;
+
+        i++;
+        lb = src[i];
+        if ( lb >= 'A' && lb <= 'F' )
+            lb = lb - 'A' + 10;
+        else if ( lb >= '0' && lb <= '9' )
+            lb = lb - '0';
+        else
+            return false;
+
+        dest[j++] = (hb << 4) | (lb);
+    }
+
+    return true;
+}
+
 
 static OSStatus parse_ota_respose(char *ota_res, char *ota_url, int32_t ota_url_len)
 {
@@ -247,26 +292,26 @@ void fog_v2_ota(void)
     return;
 }
 
-OSStatus fog_mico_ota_updated(int filelen, uint16_t crc)
-{
-#ifdef MICO_KERNEL
-    extern int switch_active_firmware(void);
-    switch_active_firmware();
-#else
-	mico_logic_partition_t* ota_partition = MicoFlashGetInfo( MICO_PARTITION_OTA_TEMP );
-    mico_Context_t* context = NULL;
-
-	context = mico_system_context_get( );
-    memset(&context->flashContentInRam.bootTable, 0, sizeof(boot_table_t));
-    context->flashContentInRam.bootTable.length = filelen;
-    context->flashContentInRam.bootTable.start_address = ota_partition->partition_start_addr;
-    context->flashContentInRam.bootTable.type = 'A';
-    context->flashContentInRam.bootTable.upgrade_type = 'U';
-    context->flashContentInRam.bootTable.crc = crc;
-    mico_system_context_update( mico_system_context_get( ) );
-#endif
-	return kNoErr;
-}
+//OSStatus fog_mico_ota_updated(int filelen, uint16_t crc)
+//{
+//#ifdef MICO_KERNEL
+//    extern int switch_active_firmware(void);
+//    switch_active_firmware();
+//#else
+//	mico_logic_partition_t* ota_partition = MicoFlashGetInfo( MICO_PARTITION_OTA_TEMP );
+//    mico_Context_t* context = NULL;
+//
+//	context = mico_system_context_get( );
+//    memset(&context->flashContentInRam.bootTable, 0, sizeof(boot_table_t));
+//    context->flashContentInRam.bootTable.length = filelen;
+//    context->flashContentInRam.bootTable.start_address = ota_partition->partition_start_addr;
+//    context->flashContentInRam.bootTable.type = 'A';
+//    context->flashContentInRam.bootTable.upgrade_type = 'U';
+//    context->flashContentInRam.bootTable.crc = crc;
+//    mico_system_context_update( mico_system_context_get( ) );
+//#endif
+//	return kNoErr;
+//}
 
 
 static void fog_v2_ota_finish(void)
@@ -281,6 +326,7 @@ static void fog_v2_ota_finish(void)
     uint32_t read_index = 0;
     uint32_t file_len = ota_file_len;
     uint32_t need_read_len = 0;
+    bool ret = 0;
 
     require_string(MicoFlashGetInfo( MICO_PARTITION_OTA_TEMP )->partition_owner != MICO_FLASH_NONE, exit, "OTA storage is not exist");
 
@@ -315,20 +361,22 @@ static void fog_v2_ota_finish(void)
 	Md5Final(&ctx, md5_calc);
     CRC16_Final( &crc16_contex, &crc );
 
-    app_log("FLASH READ: %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x",
+    app_log("FLASH READ: %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X",
             md5_calc[0],md5_calc[1],md5_calc[2],md5_calc[3],
             md5_calc[4],md5_calc[5],md5_calc[6],md5_calc[7],
             md5_calc[8],md5_calc[9],md5_calc[10],md5_calc[11],
             md5_calc[12],md5_calc[13],md5_calc[14],md5_calc[15]);
 
-    str2hex(ota_file_md5, md5_recv, sizeof(md5_recv));
+    //str2hex(ota_file_md5, md5_recv, sizeof(md5_recv));
+    ret = user_str2hex(ota_file_md5, md5_recv, sizeof(md5_recv));
+    require_action_string(ret == true, exit, err = kGeneralErr, "user_str2hex() is error");
 
     if ( memcmp( md5_recv, md5_calc, sizeof(md5_recv) ) == 0 )
     {
         fog_v2_ota_upload_log( );
         fog_des_clean( );
 
-        err = fog_mico_ota_updated( ota_file_len, crc );
+        err = mico_ota_switch_to_new_fw( ota_file_len, crc );
         require_noerr( err, exit );
 
         app_log( "OTA SUCCESS. Rebooting...\r\n" );
@@ -338,11 +386,10 @@ static void fog_v2_ota_finish(void)
             mico_system_power_perform( mico_system_context_get( ), eState_Software_Reset );
             mico_thread_sleep(100);
         }
-
     }else
     {
         app_log("ERROR!! MD5 Error.");
-        app_log("HTTP RECV:   %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x",
+        app_log("HTTP RECV:   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X",
                  md5_recv[0],md5_recv[1],md5_recv[2],md5_recv[3],
                  md5_recv[4],md5_recv[5],md5_recv[6],md5_recv[7],
                  md5_recv[8],md5_recv[9],md5_recv[10],md5_recv[11],
@@ -444,10 +491,12 @@ void fog_ota_thread(mico_thread_arg_t args)
     err = connect( ota_fd, (struct sockaddr *)&addr, sizeof(addr) );
     require_action(err == kNoErr, exit, err = kGeneralErr );
 
-    ssl_version_set(TLS_V1_2_MODE);    //设置SSL版本
+    //ssl_version_set(TLS_V1_2_MODE);    //设置SSL版本
+    ssl_set_client_version(TLS_V1_2_MODE);
+
 
     client_ssl = ssl_connect( ota_fd, 0, NULL, &ssl_errno );
-    require_action( client_ssl != NULL, exit, {err = kGeneralErr; app_log("OTA ssl_connnect error, errno = %d", ssl_errno);} );
+    require_action( client_ssl != NULL, quit_thread, {err = kGeneralErr; app_log("OTA ssl_connnect error, errno = %d", ssl_errno);} );
 
     system_log("#####OTA connect#####:num_of_chunks:%d, free:%d", MicoGetMemoryInfo()->num_of_chunks, MicoGetMemoryInfo()->free_memory);
 
@@ -543,9 +592,7 @@ void fog_ota_thread(mico_thread_arg_t args)
 
     SocketClose( &ota_fd );
 
-    HTTPHeaderClear( httpHeader );
     HTTPHeaderDestory( &httpHeader );
-    httpHeader = NULL;
 
     if(err != kNoErr)
     {
@@ -554,7 +601,23 @@ void fog_ota_thread(mico_thread_arg_t args)
     }
 
  quit_thread:
-    http_read_file_success = true;
+     if( client_ssl != NULL)
+     {
+         ssl_close( client_ssl );
+         client_ssl = NULL;
+     }
+
+     SocketClose( &ota_fd );
+
+     HTTPHeaderDestory( &httpHeader );
+
+     if(err == kNoErr)
+     {
+         http_read_file_success = true;
+     }else{
+         http_read_file_success = false;
+     }
+
     mico_rtos_set_semaphore( &ota_sem );
     mico_rtos_delete_thread(NULL);
     return;

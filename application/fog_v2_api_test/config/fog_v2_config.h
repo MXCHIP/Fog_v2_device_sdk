@@ -1,10 +1,36 @@
 #ifndef __FOG_V2_CONFIG_H_
 #define __FOG_V2_CONFIG_H_
 
-#define FOG_V2_PRODUCT_ID               ("3c800be4-8612-11e6-9d95-00163e103941")    //云端建立产品得到的 产品ID
-#define FOG_V2_REPORT_VER               ("FOG_V2_EMW3165@")     //固件主版本号
-#define FOG_V2_REPORT_VER_NUM           ("001")                 //固件次版本号
-#define FOG_V2_MODULE_TYPE              ("EMW3165")             //模块型号
+#define FOG_ENABLE  (1)
+#define FOG_DISABLE (0)
+
+//选择你的模块型号
+#define EMW_3165                            FOG_ENABLE
+#define EMW_3166                            FOG_DISABLE
+#define EMW_3239                            FOG_DISABLE
+#define EMW_3031                            FOG_DISABLE
+
+#if (EMW_3165 == FOG_ENABLE)
+    #define FOG_V2_PRODUCT_ID               ("3c800be4-8612-11e6-9d95-00163e103941")    //云端建立产品得到的 产品ID
+    #define FOG_V2_REPORT_VER               ("FOG_V2_EMW3165@")     //固件主版本号
+    #define FOG_V2_REPORT_VER_NUM           ("001")                 //固件次版本号
+    #define FOG_V2_MODULE_TYPE              ("EMW3165")             //模块型号
+#elif (EMW_3166 == FOG_ENABLE)
+    #define FOG_V2_PRODUCT_ID               ("5719ac44-8612-11e6-9d95-00163e103941")    //云端建立产品得到的 产品ID
+    #define FOG_V2_REPORT_VER               ("FOG_V2_EMW3166@")     //固件主版本号
+    #define FOG_V2_REPORT_VER_NUM           ("001")                 //固件次版本号
+    #define FOG_V2_MODULE_TYPE              ("EMW3166")             //模块型号
+#elif(EMW_3239 == FOG_ENABLE)
+    #define FOG_V2_PRODUCT_ID               ("712d8ee8-8612-11e6-9d95-00163e103941")    //云端建立产品得到的 产品ID
+    #define FOG_V2_REPORT_VER               ("FOG_V2_EMW3239@")     //固件主版本号
+    #define FOG_V2_REPORT_VER_NUM           ("001")                 //固件次版本号
+    #define FOG_V2_MODULE_TYPE              ("EMW3239")             //模块型号
+#elif (EMW_3031 == FOG_ENABLE)
+    #define FOG_V2_PRODUCT_ID               ("b4754452-8612-11e6-9d95-00163e103941")    //云端建立产品得到的 产品ID
+    #define FOG_V2_REPORT_VER               ("FOG_V2_EMW3031@")     //固件主版本号
+    #define FOG_V2_REPORT_VER_NUM           ("001")                 //固件次版本号
+    #define FOG_V2_MODULE_TYPE              ("EMW3031")             //模块型号
+#endif
 
 #define FOG_V2_DEVICE_SN                ("MXCHIP")                  //芯片SN 默认为MXCHIP
 
