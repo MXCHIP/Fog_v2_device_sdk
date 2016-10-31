@@ -6,7 +6,7 @@
 
 static mico_semaphore_t wifi_sem;
 
-#define FOG_V2_RECV_BUFF_LEN        (2048)
+#define FOG_V2_RECV_BUFF_LEN        (1024)
 
 void appNotify_WifiStatusHandler( WiFiEvent status, void* const inContext )
 {
@@ -108,16 +108,24 @@ int application_start( void )
     /* wait for wifi on */
     mico_rtos_get_semaphore( &wifi_sem, MICO_WAIT_FOREVER );
 
+    app_log("[111]num_of_chunks:%d,allocted_memory:%d, free:%d, total_memory:%d", MicoGetMemoryInfo()->num_of_chunks, MicoGetMemoryInfo()->allocted_memory, MicoGetMemoryInfo()->free_memory, MicoGetMemoryInfo()->total_memory);
+
     err = start_fog_v2_service( );
     require_noerr( err, exit );
 
     /* Create send thread */
-    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_send_thread", fog_v2_send, 0x1000, 0 );
+    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_send_thread", fog_v2_send, 0x800, 0 );
     require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_send_thread." );
 
     /* Create recv thread */
-    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_recv_thread", fog_v2_recv, 0x1000, 0 );
+    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_recv_thread", fog_v2_recv, 0x800, 0 );
     require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_recv_thread." );
+
+    while(1)
+    {
+        mico_thread_sleep(1);
+        app_log("num_of_chunks:%d,allocted_memory:%d, free:%d, total_memory:%d", MicoGetMemoryInfo()->num_of_chunks, MicoGetMemoryInfo()->allocted_memory, MicoGetMemoryInfo()->free_memory, MicoGetMemoryInfo()->total_memory);
+    }
 
     exit:
     mico_rtos_delete_thread( NULL );
