@@ -102,6 +102,10 @@ int application_start( void )
 
     mico_context = mico_system_context_init( sizeof(FOG_DES_S) );
 
+    /*init fog v2 service*/
+    err = init_fog_v2_service();
+    require_noerr( err, exit );
+
     err = mico_system_init( mico_context );
     require_noerr( err, exit );
 
@@ -120,12 +124,6 @@ int application_start( void )
     /* Create recv thread */
     err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_recv_thread", fog_v2_recv, 0x800, 0 );
     require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_recv_thread." );
-
-    while(1)
-    {
-        mico_thread_sleep(1);
-        app_log("num_of_chunks:%d,allocted_memory:%d, free:%d, total_memory:%d", MicoGetMemoryInfo()->num_of_chunks, MicoGetMemoryInfo()->allocted_memory, MicoGetMemoryInfo()->free_memory, MicoGetMemoryInfo()->total_memory);
-    }
 
     exit:
     mico_rtos_delete_thread( NULL );
