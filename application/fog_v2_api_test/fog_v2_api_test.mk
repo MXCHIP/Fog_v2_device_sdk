@@ -9,8 +9,6 @@
 
 NAME := Lib_fog_v2_api_test
 
-GLOBAL_INCLUDES += 	./config
-
-$(NAME)_SOURCES := 	hello_fog.c \
+$(NAME)_SOURCES := 	hello_fog.c
 				
 $(NAME)_COMPONENTS := protocols/fog_v2

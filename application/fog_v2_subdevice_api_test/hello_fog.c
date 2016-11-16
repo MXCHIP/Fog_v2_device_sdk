@@ -1,5 +1,5 @@
 #include "mico.h"
-#include "fog_v2_config.h"
+#include "fog_v2_include.h"
 #include "fog_v2_subdevice_app.h"
 
 #define app_log(M, ...)             custom_log("APP", M, ##__VA_ARGS__)

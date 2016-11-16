@@ -9,8 +9,6 @@
 
 NAME := Lib_fog_v2_subdevice_api_test
 
-GLOBAL_INCLUDES += 	./config \
-
 $(NAME)_SOURCES := 	hello_fog.c \
 					subdevice_app/fog_v2_subdevice_app.c
 

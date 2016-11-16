@@ -1,5 +1,5 @@
 #include "mico.h"
-#include "fog_v2_config.h"
+#include "fog_v2_include.h"
 
 #define app_log(M, ...)             custom_log("APP", M, ##__VA_ARGS__)
 #define app_log_trace()             custom_log_trace("APP")
@@ -111,8 +111,6 @@ int application_start( void )
 
     /* wait for wifi on */
     mico_rtos_get_semaphore( &wifi_sem, MICO_WAIT_FOREVER );
-
-    app_log("[111]num_of_chunks:%d,allocted_memory:%d, free:%d, total_memory:%d", MicoGetMemoryInfo()->num_of_chunks, MicoGetMemoryInfo()->allocted_memory, MicoGetMemoryInfo()->free_memory, MicoGetMemoryInfo()->total_memory);
 
     err = start_fog_v2_service( );
     require_noerr( err, exit );
