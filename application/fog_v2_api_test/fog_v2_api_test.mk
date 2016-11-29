@@ -11,4 +11,6 @@ NAME := Lib_fog_v2_api_test
 
 $(NAME)_SOURCES := 	hello_fog.c
 				
+$(NAME)_LINK_FILES := hello_fog.o
+				
 $(NAME)_COMPONENTS := protocols/fog_v2

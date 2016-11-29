@@ -14,6 +14,7 @@ $(NAME)_SOURCES := 	hello_fog.c \
 
 $(NAME)_INCLUDES += ./subdevice_app 
 				
-$(NAME)_LINK_FILES := subdevice_app/fog_v2_subdevice_app.o
+$(NAME)_LINK_FILES := subdevice_app/fog_v2_subdevice_app.o \
+					  hello_fog.o
 				
 $(NAME)_COMPONENTS := protocols/fog_v2
