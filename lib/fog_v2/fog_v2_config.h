@@ -57,7 +57,7 @@
 
 #define FOG_V2_OTA_CHECK_ENABLE         (1)      //1:enable 0:disable  打开后在fog初始化中会检查当前版本
 
-#define FOG_V2_USE_SUB_DEVICE           (1)      //1:enable 0:disable  是否使用子设备接口,只有EMW3239才会使用到
+#define FOG_V2_USE_SUB_DEVICE           (0)      //1:enable 0:disable  是否使用子设备接口,只有EMW3239才会使用到
 
 #endif
 
