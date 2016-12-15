@@ -48,6 +48,22 @@ OSStatus fog_v2_device_send_event(const char *payload, uint32_t flag);
 //返回值：kNoErr为成功 其他值为失败
 OSStatus fog_v2_device_recv_command(char *payload, uint32_t payload_len, uint32_t timeout);
 
+#if (FOG_V2_USER_FLASH_PARAM == 1)
+//功能：将用户数据写入到中间件的用户flash参数区
+//参数：user_data-用户数据指针
+//参数：offset-偏移量
+//参数：user_data_len-用户数据长度
+//返回值：kNoErr-成功,其他-失败
+OSStatus fog_v2_write_user_param(const uint8_t *user_data, uint32_t user_data_len, uint32_t offset);
+
+//功能：将中间件的用户flash参数区读出
+//参数：user_data-用户数据指针
+//参数：offset-偏移量
+//参数：user_data_len-用户数据长度
+//返回值：kNoErr-成功,其他-失败
+OSStatus fog_v2_read_user_param(uint8_t *user_data, uint32_t user_data_len, uint32_t offset);
+#endif
+
 //功能：设备端设置回收标志位 若调用该接口，设备重启后联网会自动向云端发起设备回收请求
 //参数：无
 //返回值：true - 设置成功，flase - 设置失败
@@ -66,7 +82,6 @@ bool fog_v2_is_have_superuser(void);
 //FOG2_OTA_IN_UPDATE 正在OTA更新
 //FOG2_OTA_UPDATE_SUCCESS 更新成功
 //FOG2_OTA_UPDATE_FAILURE 更新失败
-//参数： s_mac - 子设备MAC地址
 //返回值：无
 //USED void user_fog_v2_ota_notification(FOG2_OTA_EVENT_TYPE ota_event_type)
 //{
@@ -138,7 +153,7 @@ OSStatus fog_v2_subdevice_add_timeout(const char *s_product_id);
 //事件类型一共有三种
 //MQTT_CMD_GATEWAY_UNBIND   网关设备被解绑(s_product_id和s_mac无效)
 //MQTT_CMD_GATEWAY_BIND     网关设备被绑定(s_product_id和s_mac无效)
-//MQTT_CMD_SUB_UNBIND       字设备被解绑(s_product_id和s_mac有效)
+//MQTT_CMD_SUB_UNBIND       子设备被解绑(s_product_id和s_mac有效)
 //参数： s_product_id - 子设备产品ID
 //参数： s_mac - 子设备MAC地址
 //返回值：无
