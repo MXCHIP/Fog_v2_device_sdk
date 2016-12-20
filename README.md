@@ -58,7 +58,7 @@ OSStatus start_fog_v2_service(void);
 //功能：往云端发送数据
 //参数： payload - 要往云端发送的数据，该指针指向的数据只能为json格式
 //参数： flag - 发送方式
-//下面三个宏定义组合,采用异或组合的方式
+//下面三个宏定义组合,采用或组合的方式
 //FOG_V2_SEND_EVENT_RULES_PUBLISH  向设备的topic去publish数据
 //FOG_V2_SEND_EVENT_RULES_DATEBASE 将此次的payload数据存入数据库
 //FOG_V2_SEND_EVENT_RULES_PRODUCT  向设备对应产品的topic去publish数据(数据推送给厂商)
