@@ -59,7 +59,7 @@ void fog_v2_recv( mico_thread_arg_t arg )
     OSStatus err = kNoErr;
     char *fog_recv_buff = NULL;
 
-    app_log("fog v2 send thread start!");
+    app_log("fog v2 recv thread start!");
 
     fog_recv_buff = malloc( FOG_V2_RECV_BUFF_LEN );
     require( fog_recv_buff != NULL, exit );
@@ -93,7 +93,7 @@ void fog_v2_send( mico_thread_arg_t arg )
     char send_buff[256] = { 0 };
     uint32_t count = 0;
 
-    app_log("fog v2 recv thread start!");
+    app_log("fog v2 send thread start!");
 
     while ( 1 )
     {
@@ -111,6 +111,53 @@ void fog_v2_send( mico_thread_arg_t arg )
     }
 
     mico_rtos_delete_thread( NULL );
+}
+
+//flash param read write test
+OSStatus fog_v2_user_param_test(void)
+{
+    uint8_t write_buff[512] = {0};
+    uint8_t read_buff[512] = {0};
+
+    memset(write_buff, '3', sizeof(write_buff));
+
+    fog_v2_write_user_param(write_buff, sizeof(write_buff), 0);
+    fog_v2_read_user_param(read_buff, sizeof(read_buff), 0);
+
+    if(memcmp(write_buff, read_buff, sizeof(read_buff)) == 0)
+    {
+        app_log("param test success!");
+        return kNoErr;
+    }else
+    {
+        app_log("param test failed!");
+        return kGeneralErr;
+    }
+}
+
+OSStatus user_get_server_time(void)
+{
+    char *time_buff_p = NULL;
+    OSStatus err = kGeneralErr;
+
+    time_buff_p = malloc(1024);
+    require_action_string(time_buff_p != NULL, exit, err = kNoMemoryErr, "malloc error");
+
+    memset(time_buff_p, 0, 1024);
+
+    err = fog_v2_device_get_server_time(time_buff_p, 1024);
+    require_noerr_string(err, exit, "get server time error!");
+
+    app_log("time:%s", time_buff_p);
+
+    exit:
+    if(time_buff_p != NULL)
+    {
+        free(time_buff_p);
+        time_buff_p = NULL;
+    }
+
+    return err;
 }
 
 int application_start( void )
@@ -134,6 +181,10 @@ int application_start( void )
     err = init_fog_v2_service();
     require_noerr( err, exit );
 
+    /*test user param in flash*/
+    err = fog_v2_user_param_test();
+    require_noerr( err, exit );
+
     err = mico_system_init( mico_context );
     require_noerr( err, exit );
 
@@ -143,13 +194,22 @@ int application_start( void )
     err = start_fog_v2_service( );
     require_noerr( err, exit );
 
-    /* Create send thread */
-    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_send_thread", fog_v2_send, 0x800, 0 );
-    require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_send_thread." );
+    while(1)
+    {
+        app_log("num_of_chunks:%d,allocted_memory:%d, free:%d, total_memory:%d", MicoGetMemoryInfo()->num_of_chunks, MicoGetMemoryInfo()->allocted_memory, MicoGetMemoryInfo()->free_memory, MicoGetMemoryInfo()->total_memory);
+        mico_thread_sleep( 2 );
 
-    /* Create recv thread */
-    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_recv_thread", fog_v2_recv, 0x800, 0 );
-    require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_recv_thread." );
+        err = user_get_server_time();
+        require_noerr( err, exit );
+    }
+
+//    /* Create send thread */
+//    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_send_thread", fog_v2_send, 0x800, 0 );
+//    require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_send_thread." );
+//
+//    /* Create recv thread */
+//    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_recv_thread", fog_v2_recv, 0x800, 0 );
+//    require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_recv_thread." );
 
     exit:
     if(err != kNoErr)
