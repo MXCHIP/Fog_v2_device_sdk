@@ -135,31 +135,6 @@ OSStatus fog_v2_user_param_test(void)
     }
 }
 
-OSStatus user_get_server_time(void)
-{
-    char *time_buff_p = NULL;
-    OSStatus err = kGeneralErr;
-
-    time_buff_p = malloc(1024);
-    require_action_string(time_buff_p != NULL, exit, err = kNoMemoryErr, "malloc error");
-
-    memset(time_buff_p, 0, 1024);
-
-    err = fog_v2_device_get_server_time(time_buff_p, 1024);
-    require_noerr_string(err, exit, "get server time error!");
-
-    app_log("time:%s", time_buff_p);
-
-    exit:
-    if(time_buff_p != NULL)
-    {
-        free(time_buff_p);
-        time_buff_p = NULL;
-    }
-
-    return err;
-}
-
 int application_start( void )
 {
     app_log_trace();
@@ -194,22 +169,13 @@ int application_start( void )
     err = start_fog_v2_service( );
     require_noerr( err, exit );
 
-    while(1)
-    {
-        app_log("num_of_chunks:%d,allocted_memory:%d, free:%d, total_memory:%d", MicoGetMemoryInfo()->num_of_chunks, MicoGetMemoryInfo()->allocted_memory, MicoGetMemoryInfo()->free_memory, MicoGetMemoryInfo()->total_memory);
-        mico_thread_sleep( 2 );
+    /* Create send thread */
+    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_send_thread", fog_v2_send, 0x800, 0 );
+    require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_send_thread." );
 
-        err = user_get_server_time();
-        require_noerr( err, exit );
-    }
-
-//    /* Create send thread */
-//    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_send_thread", fog_v2_send, 0x800, 0 );
-//    require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_send_thread." );
-//
-//    /* Create recv thread */
-//    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_recv_thread", fog_v2_recv, 0x800, 0 );
-//    require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_recv_thread." );
+    /* Create recv thread */
+    err = mico_rtos_create_thread( NULL, MICO_APPLICATION_PRIORITY, "fog_v2_recv_thread", fog_v2_recv, 0x800, 0 );
+    require_noerr_string( err, exit, "ERROR: Unable to start the fog_v2_recv_thread." );
 
     exit:
     if(err != kNoErr)
