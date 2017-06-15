@@ -281,6 +281,6 @@ WIFI网关为子设备提供相应增加子设备、删除子设备、设置在�
 在调用fog_v2_add_subdevice()时，可以通过`auto_set_online`参数来选择是否让接口内部设置子设备在线
 
 
-  [1]: http://mico.io/wiki/download
-  [2]: http://mico.io/wiki/download
+  [1]: http://developer.mico.io/downloads/1
+  [2]: http://developer.mico.io/downloads/1
   [3]: http://static.zybuluo.com/1113240207/1rbfag1e3ff15e5skivjnc2h/2.PNG
